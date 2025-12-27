@@ -1,14 +1,13 @@
 /**
- * show 命令 - 显示 Skill 详情
+ * show command - Display Skill details
  */
 import { Command } from "@cliffy/command";
-import { Table } from "@cliffy/table";
-import { findSkillsDir, scanSkills, loadSkillFull, bold, cyan } from "../lib/mod.ts";
+import { bold, cyan, findSkillsDir, loadSkillFull, scanSkills, t } from "../lib/mod.ts";
 
 export const showCommand = new Command()
   .name("show")
   .alias("info")
-  .description("显示 Skill 详细信息")
+  .description("Display Skill details")
   .arguments("<name:string>")
   .action(async (_options, name: string) => {
     const skillsDir = await findSkillsDir();
@@ -16,14 +15,14 @@ export const showCommand = new Command()
 
     const skill = skills.find((s) => s.name === name);
     if (!skill) {
-      console.log(`❌ 未找到 skill: ${name}`);
-      console.log(`\n💡 使用 'skill-manager list' 查看所有可用的 skills`);
+      console.log(`❌ ${t("error.skillNotFound")}: ${name}`);
+      console.log(`\n💡 ${t("show.useList")}`);
       return;
     }
 
     const full = await loadSkillFull(skill.path);
     if (!full) {
-      console.log(`❌ 无法加载 skill: ${name}`);
+      console.log(`❌ ${t("error.skillNotFound")}: ${name}`);
       return;
     }
 
@@ -31,39 +30,39 @@ export const showCommand = new Command()
     console.log(`${bold(cyan(`  📦 ${full.name}`))}`);
     console.log(`${bold("═".repeat(60))}\n`);
 
-    console.log(`${bold("📝 描述:")}`);
+    console.log(`${bold(`📝 ${t("common.description")}:`)}`);
     console.log(`  ${full.description}\n`);
 
-    console.log(`${bold("📁 路径:")} ${full.path}\n`);
+    console.log(`${bold(`📁 ${t("common.path")}:`)} ${full.path}\n`);
 
     if (full.license) {
-      console.log(`${bold("📜 许可证:")} ${full.license}\n`);
+      console.log(`${bold(`📜 ${t("common.license")}:`)} ${full.license}\n`);
     }
 
     if (full.compatibility) {
-      console.log(`${bold("⚙️  兼容性:")} ${full.compatibility}\n`);
+      console.log(`${bold(`⚙️  ${t("common.compatibility")}:`)} ${full.compatibility}\n`);
     }
 
     if (full.scripts.length > 0) {
-      console.log(`${bold("📜 脚本:")}`);
+      console.log(`${bold(`📜 ${t("common.scripts")}:`)}`);
       full.scripts.forEach((s) => console.log(`  - ${s}`));
       console.log();
     }
 
     if (full.references.length > 0) {
-      console.log(`${bold("📚 参考文档:")}`);
+      console.log(`${bold(`📚 ${t("common.references")}:`)}`);
       full.references.forEach((r) => console.log(`  - ${r}`));
       console.log();
     }
 
     if (full.assets.length > 0) {
-      console.log(`${bold("🎨 资源文件:")}`);
+      console.log(`${bold(`🎨 ${t("common.assets")}:`)}`);
       full.assets.forEach((a) => console.log(`  - ${a}`));
       console.log();
     }
 
     console.log(`${bold("─".repeat(60))}`);
-    console.log(`${bold("💡 使用方式:")}`);
-    console.log(`  skill-manager load ${name}     # 输出完整内容供 AI 读取`);
-    console.log(`  skill-manager load ${name} -o  # 仅输出指令部分`);
+    console.log(`${bold(`💡 ${t("show.usage")}:`)}`);
+    console.log(`  skill-manager load ${name}     # Output full content for AI`);
+    console.log(`  skill-manager load ${name} -o  # Output outline only`);
   });

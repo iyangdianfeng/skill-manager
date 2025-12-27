@@ -1,10 +1,10 @@
 /**
- * YAML Frontmatter 解析工具
+ * YAML Frontmatter parser utility
  */
 import { parse as parseYaml } from "@std/yaml";
 
 /**
- * 解析 SKILL.md 文件的 frontmatter 和 body
+ * Parse SKILL.md file frontmatter and body
  */
 export function parseFrontmatter(content: string): {
   frontmatter: Record<string, unknown>;
@@ -24,7 +24,7 @@ export function parseFrontmatter(content: string): {
     const frontmatter = parseYaml(yamlContent) as Record<string, unknown>;
     return { frontmatter: frontmatter || {}, body };
   } catch (e) {
-    console.error(`⚠️  YAML 解析错误: ${e}`);
+    console.error(`⚠️  YAML parse error: ${e}`);
     return { frontmatter: {}, body };
   }
 }

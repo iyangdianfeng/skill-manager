@@ -1,5 +1,5 @@
 /**
- * 库模块入口
+ * Library module exports
  */
 export { parseFrontmatter } from "./parser.ts";
 export {
@@ -32,3 +32,4 @@ export {
   warn,
   info,
 } from "./console.ts";
+export { t, setLocale, getLocale } from "./i18n.ts";

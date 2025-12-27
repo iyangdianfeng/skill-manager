@@ -1,15 +1,15 @@
 /**
- * search 命令 - 本地搜索 Skills
+ * search command - Local search for Skills
  */
 import { Command } from "@cliffy/command";
-import { findSkillsDir, scanSkills, bold, cyan } from "../lib/mod.ts";
+import { bold, cyan, findSkillsDir, scanSkills, t } from "../lib/mod.ts";
 
 export const searchCommand = new Command()
   .name("search")
   .alias("find")
-  .description("本地搜索匹配的 Skill")
+  .description("Search for matching Skills locally")
   .arguments("<query:string>")
-  .option("--json", "输出 JSON 格式")
+  .option("--json", "Output in JSON format")
   .action(async (options, query: string) => {
     const skillsDir = await findSkillsDir();
     const skills = await scanSkills(skillsDir);
@@ -18,11 +18,11 @@ export const searchCommand = new Command()
     const matches = skills.filter(
       (s) =>
         s.name.toLowerCase().includes(queryLower) ||
-        s.description.toLowerCase().includes(queryLower)
+        s.description.toLowerCase().includes(queryLower),
     );
 
     if (matches.length === 0) {
-      console.log(`❌ 未找到匹配 "${query}" 的 skill`);
+      console.log(`❌ ${t("search.noMatch", { query })}`);
       return;
     }
 
@@ -31,12 +31,12 @@ export const searchCommand = new Command()
       return;
     }
 
-    console.log(`🔍 找到 ${bold(String(matches.length))} 个匹配的 skills:\n`);
+    console.log(`🔍 ${t("search.found", { count: matches.length })}:\n`);
 
     for (const skill of matches) {
       console.log(`  ${bold(cyan(skill.name))}`);
       console.log(
-        `    ${skill.description.slice(0, 120)}${skill.description.length > 120 ? "..." : ""}`
+        `    ${skill.description.slice(0, 120)}${skill.description.length > 120 ? "..." : ""}`,
       );
       console.log(`    📁 ${skill.path}\n`);
     }

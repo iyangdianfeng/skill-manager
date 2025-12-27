@@ -6,7 +6,7 @@
     // 启用代码检查
     "deno.lint": true,
     // 启用不稳定 API (如果需要)
-    "deno.unstable": false,
+    "deno.unstable": [],
     // 禁用 TypeScript 的内置验证 (由 Deno 接管)
     "typescript.validate.enable": false,
     "javascript.validate.enable": false,

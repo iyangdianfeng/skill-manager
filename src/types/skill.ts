@@ -1,41 +1,41 @@
 /**
- * Skill 相关类型定义
+ * Skill related type definitions
  */
 
 /**
- * Skill 元数据（基础信息）
+ * Skill metadata (basic information)
  */
 export interface SkillMeta {
-  /** Skill 名称 */
+  /** Skill name */
   name: string;
-  /** Skill 描述 */
+  /** Skill description */
   description: string;
-  /** Skill 本地路径 */
+  /** Skill local path */
   path: string;
-  /** 许可证 */
+  /** License */
   license?: string;
-  /** 兼容性说明 */
+  /** Compatibility notes */
   compatibility?: string;
-  /** 自定义元数据 */
+  /** Custom metadata */
   metadata?: Record<string, string>;
 }
 
 /**
- * Skill 完整信息（包含资源列表）
+ * Full Skill information (includes resource lists)
  */
 export interface SkillFull extends SkillMeta {
-  /** SKILL.md 的正文内容 */
+  /** SKILL.md body content */
   body: string;
-  /** scripts/ 目录下的文件列表 */
+  /** Files in scripts/ directory */
   scripts: string[];
-  /** references/ 目录下的文件列表 */
+  /** Files in references/ directory */
   references: string[];
-  /** assets/ 目录下的文件列表 */
+  /** Files in assets/ directory */
   assets: string[];
 }
 
 /**
- * GitHub 搜索结果
+ * GitHub search result
  */
 export interface GitHubSearchResult {
   name: string;
@@ -47,7 +47,7 @@ export interface GitHubSearchResult {
 }
 
 /**
- * 已安装 Skills 的扫描结果
+ * Installed Skills scan result
  */
 export interface InstalledSkillsResult {
   location: string;

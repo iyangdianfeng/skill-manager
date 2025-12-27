@@ -1,158 +1,160 @@
 # Skill Manager CLI
 
-跨平台 AI Skill 管理工具，用于管理和使用
-[Agent Skills](https://agentskills.io/)。
+Cross-platform AI Skill management tool for managing and using
+[Agent Skills](https://agentskills.io/).
 
-> **完全开源** - 比 `@kotrotsos/skill-cli` 功能更丰富，且完全开源！
+> **Fully Open Source** - More feature-rich than `@kotrotsos/skill-cli`, and completely open source!
 
-## ✨ 功能特性
+[中文文档](./README.zh.md)
 
-### 本地 Skill 管理
+## ✨ Features
 
-- **list** - 列出本地可用的 skills
-- **search** - 本地搜索匹配的 skill
-- **show** - 显示 skill 详细信息
-- **load** - 输出 skill 内容供 AI 读取
-- **init** - 创建新的 skill
-- **validate** - 验证 skill 格式
-- **export** - 导出 skill 为文件
+### Local Skill Management
 
-### GitHub & 安装
+- **list** - List locally available skills
+- **search** - Search for matching skills locally
+- **show** - Display skill details
+- **load** - Output skill content for AI reading
+- **init** - Create a new skill
+- **validate** - Validate skill format
+- **export** - Export skill to file
 
-- **github** - 从 GitHub 搜索 Skills
-- **install** - 安装 Skill (GitHub 或本地目录)
-- **uninstall** - 卸载已安装的 Skill
-- **installed** - 列出已安装的 Skills
+### GitHub & Installation
 
-## 📦 安装
+- **github** - Search Skills from GitHub
+- **install** - Install Skill (from GitHub or local directory)
+- **uninstall** - Uninstall an installed Skill
+- **installed** - List installed Skills
 
-### 方式 1：直接运行
+## 📦 Installation
+
+### Method 1: Run Directly
 
 ```bash
 cd tools/skill-manager
 deno task run <command>
 ```
 
-### 方式 2：全局安装（推荐）
+### Method 2: Global Installation (Recommended)
 
 ```bash
 cd tools/skill-manager
 deno task install
 
-# 确保 ~/.deno/bin 在 PATH 中
+# Ensure ~/.deno/bin is in your PATH
 echo 'export PATH="$HOME/.deno/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 
-# 然后可以直接使用
+# Then use directly
 skill-manager <command>
 ```
 
-### 方式 3：编译为可执行文件
+### Method 3: Compile to Executable
 
 ```bash
 cd tools/skill-manager
 deno task compile
 
-# 生成 skill-manager 可执行文件
+# Creates skill-manager executable
 ./skill-manager <command>
 ```
 
-## 📖 使用方法
+## 📖 Usage
 
-### 本地 Skill 管理
+### Local Skill Management
 
 ```bash
-# 列出所有本地 skills
+# List all local skills
 skill-manager list
-skill-manager list --verbose   # 显示详细信息
-skill-manager list --json      # 输出 JSON 格式
+skill-manager list --verbose   # Show detailed information
+skill-manager list --json      # Output in JSON format
 
-# 本地搜索 skill
+# Search for skills locally
 skill-manager search pdf
 skill-manager search "document processing"
 
-# 显示 skill 详情
+# Show skill details
 skill-manager show pdf
 skill-manager show docx
 
-# 加载 skill 内容（供 AI 读取）
-skill-manager load pdf                    # 输出到终端
-skill-manager load pdf -o pdf-skill.md    # 保存到文件
-skill-manager load pdf --outline          # 仅输出大纲
+# Load skill content (for AI reading)
+skill-manager load pdf                    # Output to terminal
+skill-manager load pdf -o pdf-skill.md    # Save to file
+skill-manager load pdf --outline          # Output outline only
 
-# 创建新 skill
+# Create new skill
 skill-manager init my-new-skill
 skill-manager init my-skill --path ./custom-skills
 
-# 验证 skill 格式
+# Validate skill format
 skill-manager validate ./skills/my-skill
 
-# 导出 skill
+# Export skill
 skill-manager export pdf
 skill-manager export pdf --format json
 skill-manager export pdf -o ./exports/pdf-skill.md
 ```
 
-### GitHub 搜索 & 安装
+### GitHub Search & Installation
 
 ```bash
-# 从 GitHub 搜索 Skills
+# Search Skills from GitHub
 skill-manager github claude
 skill-manager github pdf --limit 20
 skill-manager github anthropic --json
 
-# 从 GitHub 安装 Skill
-skill-manager install anthropics/skills              # 安装仓库中的所有 skills
-skill-manager install anthropics/skills/skills/pdf   # 安装特定路径的 skill
-skill-manager install user/repo -g                   # 全局安装
-skill-manager install user/repo --force              # 强制覆盖
+# Install Skill from GitHub
+skill-manager install anthropics/skills              # Install all skills from repo
+skill-manager install anthropics/skills/skills/pdf   # Install specific path skill
+skill-manager install user/repo -g                   # Install globally
+skill-manager install user/repo --force              # Force overwrite
 
-# 从本地目录安装
-skill-manager install ./my-skill                     # 安装到项目目录
-skill-manager install ./my-skill -g                  # 全局安装
+# Install from local directory
+skill-manager install ./my-skill                     # Install to project directory
+skill-manager install ./my-skill -g                  # Install globally
 
-# 列出已安装的 Skills
-skill-manager installed                              # 显示全部
-skill-manager installed -g                           # 仅显示全局
-skill-manager installed --project                    # 仅显示项目
+# List installed Skills
+skill-manager installed                              # Show all
+skill-manager installed -g                           # Show global only
+skill-manager installed --project                    # Show project only
 
-# 卸载 Skill
-skill-manager uninstall pdf                          # 从项目卸载
-skill-manager uninstall pdf -g                       # 从全局卸载
+# Uninstall Skill
+skill-manager uninstall pdf                          # Uninstall from project
+skill-manager uninstall pdf -g                       # Uninstall from global
 ```
 
-## 🔧 命令参数
+## 🔧 Command Options
 
-| 参数              | 简写 | 说明               |
-| ----------------- | ---- | ------------------ |
-| `--verbose`       | `-v` | 显示详细信息       |
-| `--json`          |      | 输出 JSON 格式     |
-| `--path <dir>`    | `-p` | 指定 skills 目录   |
-| `--output <file>` | `-o` | 指定输出文件       |
-| `--format <fmt>`  |      | 导出格式 (md/json) |
-| `--global`        | `-g` | 全局安装/卸载      |
-| `--force`         | `-f` | 强制覆盖安装       |
-| `--limit <n>`     | `-l` | 搜索结果数量限制   |
-| `--help`          | `-h` | 显示帮助           |
+| Option            | Short | Description              |
+| ----------------- | ----- | ------------------------ |
+| `--verbose`       | `-v`  | Show detailed info       |
+| `--json`          |       | Output in JSON format    |
+| `--path <dir>`    | `-p`  | Specify skills dir       |
+| `--output <file>` | `-o`  | Specify output file      |
+| `--format <fmt>`  |       | Export format (md/json)  |
+| `--global`        | `-g`  | Global install/uninstall |
+| `--force`         | `-f`  | Force overwrite          |
+| `--limit <n>`     | `-l`  | Limit search results     |
+| `--help`          | `-h`  | Show help                |
 
-## 🌍 环境变量
+## 🌍 Environment Variables
 
-| 变量           | 说明                                   |
-| -------------- | -------------------------------------- |
-| `SKILLS_DIR`   | 指定本地 skills 目录路径               |
-| `GITHUB_TOKEN` | GitHub API Token（可选，提高速率限制） |
+| Variable       | Description                                       |
+| -------------- | ------------------------------------------------- |
+| `SKILLS_DIR`   | Specify local skills directory path               |
+| `GITHUB_TOKEN` | GitHub API Token (optional, increases rate limit) |
 
-## 📁 安装目录结构
+## 📁 Installation Directory Structure
 
 ```
-# 全局安装位置
+# Global installation location
 ~/.claude/skills/
 ├── pdf/
 │   └── SKILL.md
 └── docx/
     └── SKILL.md
 
-# 项目安装位置
+# Project installation location
 .claude/skills/
 ├── my-skill/
 │   └── SKILL.md
@@ -160,67 +162,80 @@ skill-manager uninstall pdf -g                       # 从全局卸载
     └── SKILL.md
 ```
 
-## 🔌 在 AI 工具中使用
+## 🔌 Using with AI Tools
 
-### OpenCode / Cursor / 其他工具
+### OpenCode / Cursor / Other Tools
 
-1. 找到需要的 skill：
+1. Find the skill you need:
    ```bash
-   skill-manager search "你需要的功能"
+   skill-manager search "feature you need"
    ```
 
-2. 加载 skill 内容：
+2. Load skill content:
    ```bash
    skill-manager load <skill-name> -o /tmp/skill.md
    ```
 
-3. 让 AI 读取生成的文件：
+3. Have AI read the generated file:
    ```
-   请阅读 /tmp/skill.md 文件，然后按照其中的指导帮我完成任务
+   Please read /tmp/skill.md and follow its guidance to complete the task
    ```
 
-### 自动化集成
+### Automation Integration
 
-在 `.agent/rules/` 中创建规则文件，自动加载相关 skill：
+Create a rule file in `.agent/rules/` to automatically load relevant skills:
 
 ```markdown
 ---
-description: 自动加载 PDF 处理能力
+description: Auto-load PDF processing capability
 ---
 
-当用户请求处理 PDF 文件时，先运行： skill-manager load pdf
+When user requests PDF file processing, first run: skill-manager load pdf
 
-然后按照输出的指导完成任务。
+Then follow the output guidance to complete the task.
 ```
 
-## 🆚 与其他工具对比
+## 🆚 Comparison with Other Tools
 
-| 功能               | skill-manager   | @kotrotsos/skill-cli |
-| ------------------ | --------------- | -------------------- |
-| 开源               | ✅ **完全开源** | ❌ 闭源              |
-| GitHub 搜索        | ✅              | ✅                   |
-| 安装/卸载          | ✅              | ✅                   |
-| 全局/项目隔离      | ✅              | ✅                   |
-| 显示详情           | ✅ **独有**     | ❌                   |
-| 加载内容供 AI 读取 | ✅ **独有**     | ❌                   |
-| 创建新 Skill       | ✅ **独有**     | ❌                   |
-| 验证格式           | ✅ **独有**     | ❌                   |
-| 导出 Skill         | ✅ **独有**     | ❌                   |
-| 运行时             | Deno            | Node.js              |
+| Feature              | skill-manager     | @kotrotsos/skill-cli |
+| -------------------- | ----------------- | -------------------- |
+| Open Source          | ✅ **Fully Open** | ❌ Closed            |
+| GitHub Search        | ✅                | ✅                   |
+| Install/Uninstall    | ✅                | ✅                   |
+| Global/Project Scope | ✅                | ✅                   |
+| Show Details         | ✅ **Unique**     | ❌                   |
+| Load for AI          | ✅ **Unique**     | ❌                   |
+| Create New Skill     | ✅ **Unique**     | ❌                   |
+| Validate Format      | ✅ **Unique**     | ❌                   |
+| Export Skill         | ✅ **Unique**     | ❌                   |
+| Runtime              | Deno              | Node.js              |
 
-## 🛠️ 开发
+## 🌐 Internationalization
+
+The CLI automatically detects your system language:
+
+- Chinese systems (`LANG=zh_*`) → Chinese messages
+- All other systems → English messages
+
+## 🛠️ Development
 
 ```bash
-# 开发模式（热重载）
+# Development mode (hot reload)
 deno task dev
 
-# 运行测试
+# Run tests
 deno task run list
 
-# 类型检查
-deno check mod.ts
+# Type check
+deno task check
+
+# Lint
+deno task lint
+
+# Format
+deno task fmt
 ```
 
-## 📜 协议
+## 📜 License
 
-Apache-2.0
+AGPL-3.0

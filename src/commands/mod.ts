@@ -1,6 +1,3 @@
-/**
- * 命令导出入口
- */
 export { listCommand } from "./list.ts";
 export { searchCommand } from "./search.ts";
 export { showCommand } from "./show.ts";

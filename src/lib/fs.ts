@@ -1,29 +1,29 @@
 /**
- * 文件系统操作工具
+ * File system utilities
  */
 import { walk } from "@std/fs/walk";
 import { ensureDir } from "@std/fs/ensure-dir";
-import { join, dirname, basename, resolve } from "@std/path";
+import { basename, dirname, join, resolve } from "@std/path";
 import { parseFrontmatter } from "./parser.ts";
-import type { SkillMeta, SkillFull } from "../types/mod.ts";
+import type { SkillFull, SkillMeta } from "../types/mod.ts";
 
 /**
- * 查找 Skills 目录
- * 优先级: 环境变量 > 父目录中的 skills 文件夹 > 当前目录
+ * Find Skills directory
+ * Priority: Environment variable > skills folder in parent directories > current directory
  */
 export async function findSkillsDir(): Promise<string> {
-  // 首先检查环境变量
+  // First check environment variable
   const envDir = Deno.env.get("SKILLS_DIR");
   if (envDir) {
     try {
       await Deno.stat(envDir);
       return envDir;
     } catch {
-      // 忽略，继续查找
+      // Ignore, continue searching
     }
   }
 
-  // 查找当前目录及父目录中的 skills 文件夹
+  // Search for skills folder in current and parent directories
   let currentDir = Deno.cwd();
   for (let i = 0; i < 5; i++) {
     const skillsPath = join(currentDir, "skills");
@@ -33,16 +33,16 @@ export async function findSkillsDir(): Promise<string> {
         return skillsPath;
       }
     } catch {
-      // 继续向上查找
+      // Continue searching upward
     }
 
-    // 检查当前目录是否就是 skills 目录
+    // Check if current directory is a skills directory
     const skillMdPath = join(currentDir, "SKILL.md");
     try {
       await Deno.stat(skillMdPath);
       return dirname(currentDir);
     } catch {
-      // 继续
+      // Continue
     }
 
     const parent = dirname(currentDir);
@@ -50,22 +50,24 @@ export async function findSkillsDir(): Promise<string> {
     currentDir = parent;
   }
 
-  // 默认返回当前目录
+  // Default to current directory
   return Deno.cwd();
 }
 
 /**
- * 扫描目录中的所有 Skills
+ * Scan directory for all Skills
  */
 export async function scanSkills(skillsDir: string): Promise<SkillMeta[]> {
   const skills: SkillMeta[] = [];
 
   try {
-    for await (const entry of walk(skillsDir, {
-      maxDepth: 3,
-      includeDirs: false,
-      match: [/SKILL\.md$/],
-    })) {
+    for await (
+      const entry of walk(skillsDir, {
+        maxDepth: 3,
+        includeDirs: false,
+        match: [/SKILL\.md$/],
+      })
+    ) {
       try {
         const content = await Deno.readTextFile(entry.path);
         const { frontmatter } = parseFrontmatter(content);
@@ -83,18 +85,18 @@ export async function scanSkills(skillsDir: string): Promise<SkillMeta[]> {
           });
         }
       } catch (e) {
-        console.error(`⚠️  解析失败: ${entry.path}: ${e}`);
+        console.error(`⚠️  Parse failed: ${entry.path}: ${e}`);
       }
     }
   } catch (e) {
-    console.error(`❌ 扫描目录失败: ${e}`);
+    console.error(`❌ Failed to scan directory: ${e}`);
   }
 
   return skills.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 /**
- * 加载 Skill 的完整信息
+ * Load full Skill information
  */
 export async function loadSkillFull(skillPath: string): Promise<SkillFull | null> {
   const skillMdPath = join(skillPath, "SKILL.md");
@@ -107,7 +109,7 @@ export async function loadSkillFull(skillPath: string): Promise<SkillFull | null
     const references: string[] = [];
     const assets: string[] = [];
 
-    // 扫描子目录
+    // Scan subdirectories
     for await (const entry of walk(skillPath, { maxDepth: 2, includeDirs: false })) {
       const relPath = entry.path.replace(skillPath + "/", "");
       if (relPath.startsWith("scripts/")) scripts.push(relPath);
@@ -120,9 +122,7 @@ export async function loadSkillFull(skillPath: string): Promise<SkillFull | null
       description: String(frontmatter.description || ""),
       path: skillPath,
       license: frontmatter.license ? String(frontmatter.license) : undefined,
-      compatibility: frontmatter.compatibility
-        ? String(frontmatter.compatibility)
-        : undefined,
+      compatibility: frontmatter.compatibility ? String(frontmatter.compatibility) : undefined,
       metadata: frontmatter.metadata as Record<string, string> | undefined,
       body,
       scripts,
@@ -135,7 +135,7 @@ export async function loadSkillFull(skillPath: string): Promise<SkillFull | null
 }
 
 /**
- * 获取 Skills 安装目录
+ * Get Skills installation directory
  */
 export function getSkillsInstallDir(global: boolean): string {
   if (global) {
@@ -147,7 +147,7 @@ export function getSkillsInstallDir(global: boolean): string {
 }
 
 /**
- * 复制目录
+ * Copy directory recursively
  */
 export async function copyDir(src: string, dest: string): Promise<void> {
   await ensureDir(dest);
@@ -164,5 +164,5 @@ export async function copyDir(src: string, dest: string): Promise<void> {
   }
 }
 
-// 导出常用的路径工具
-export { join, dirname, basename, resolve, ensureDir, walk };
+// Export common path utilities
+export { basename, dirname, ensureDir, join, resolve, walk };

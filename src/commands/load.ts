@@ -1,24 +1,24 @@
 /**
- * load 命令 - 输出 Skill 内容供 AI 读取
+ * load command - Output Skill content for AI reading
  */
 import { Command } from "@cliffy/command";
-import { findSkillsDir, scanSkills, join } from "../lib/mod.ts";
+import { findSkillsDir, join, scanSkills, t } from "../lib/mod.ts";
 import { parseFrontmatter } from "../lib/parser.ts";
 
 export const loadCommand = new Command()
   .name("load")
   .alias("get")
-  .description("输出 Skill 内容供 AI 读取")
+  .description("Output Skill content for AI reading")
   .arguments("<name:string>")
-  .option("-o, --output <file:string>", "保存到文件")
-  .option("--outline", "仅输出大纲")
+  .option("-o, --output <file:string>", "Save to file")
+  .option("--outline", "Output outline only")
   .action(async (options, name: string) => {
     const skillsDir = await findSkillsDir();
     const skills = await scanSkills(skillsDir);
 
     const skill = skills.find((s) => s.name === name);
     if (!skill) {
-      console.log(`❌ 未找到 skill: ${name}`);
+      console.log(`❌ ${t("error.skillNotFound")}: ${name}`);
       return;
     }
 
@@ -34,17 +34,17 @@ export const loadCommand = new Command()
 
       output = `# Skill: ${skill.name}
 
-## 描述
+## ${t("common.description")}
 ${skill.description}
 
-## 结构
+## Structure
 ${headers.join("\n")}
 
-## 完整路径
+## ${t("load.fullPath")}
 ${skillMdPath}
 
 ---
-使用 'skill-manager load ${name}' 获取完整内容
+${t("load.useLoad", { name })}
 `;
     } else {
       output = `<!-- Skill: ${skill.name} -->
@@ -58,7 +58,7 @@ ${content}
 
     if (options.output) {
       await Deno.writeTextFile(options.output, output);
-      console.log(`✅ 已保存到: ${options.output}`);
+      console.log(`✅ ${t("success.saved")}: ${options.output}`);
     } else {
       console.log(output);
     }

@@ -1,39 +1,41 @@
 /**
- * install 命令 - 安装 Skill
+ * install command - Install Skill
  */
 import { Command } from "@cliffy/command";
 import {
-  getSkillsInstallDir,
-  ensureDir,
-  resolve,
-  join,
   basename,
-  dirname,
   copyDir,
+  dirname,
+  ensureDir,
+  getSkillsInstallDir,
+  join,
+  resolve,
+  t,
   walk,
 } from "../lib/mod.ts";
-import { getRepoInfo, downloadRepoZip } from "../lib/github.ts";
+import { downloadRepoZip, getRepoInfo } from "../lib/github.ts";
 import { parseFrontmatter } from "../lib/parser.ts";
 
 export const installCommand = new Command()
   .name("install")
   .alias("add")
-  .description("安装 Skill (GitHub 或本地目录)")
+  .description("Install Skill (from GitHub or local directory)")
   .arguments("<source:string>")
-  .option("-g, --global", "全局安装")
-  .option("-f, --force", "强制覆盖安装")
+  .option("-g, --global", "Install globally")
+  .option("-f, --force", "Force overwrite installation")
   .action(async (options, source: string) => {
     const isGlobal = options.global || false;
     const installDir = getSkillsInstallDir(isGlobal);
 
-    console.log(`📦 安装 Skill: ${source}`);
-    console.log(`   目标目录: ${installDir}`);
-    console.log(`   模式: ${isGlobal ? "全局" : "项目"}\n`);
+    console.log(`📦 ${t("install.installing")}: ${source}`);
+    console.log(`   ${t("install.targetDir")}: ${installDir}`);
+    console.log(
+      `   ${t("install.mode")}: ${isGlobal ? t("common.global") : t("common.project")}\n`,
+    );
 
     await ensureDir(installDir);
 
-    const isLocalPath =
-      source.startsWith("/") ||
+    const isLocalPath = source.startsWith("/") ||
       source.startsWith("./") ||
       source.startsWith("../");
 
@@ -47,7 +49,7 @@ export const installCommand = new Command()
 async function installFromLocal(
   sourcePath: string,
   installDir: string,
-  force?: boolean
+  force?: boolean,
 ) {
   const resolvedPath = resolve(sourcePath);
   const skillMdPath = join(resolvedPath, "SKILL.md");
@@ -55,8 +57,8 @@ async function installFromLocal(
   try {
     await Deno.stat(skillMdPath);
   } catch {
-    console.log(`❌ 无效的 Skill 目录: ${resolvedPath}`);
-    console.log("   目录中必须包含 SKILL.md 文件");
+    console.log(`❌ ${t("install.invalidDir")}: ${resolvedPath}`);
+    console.log(`   ${t("install.mustContain")}`);
     return;
   }
 
@@ -69,29 +71,29 @@ async function installFromLocal(
   try {
     await Deno.stat(targetPath);
     if (!force) {
-      console.log(`⚠️  Skill "${skillName}" 已存在`);
-      console.log(`   使用 --force 覆盖安装`);
+      console.log(`⚠️  ${t("install.alreadyExists", { name: skillName })}`);
+      console.log(`   ${t("install.useForce")}`);
       return;
     }
     await Deno.remove(targetPath, { recursive: true });
   } catch {
-    // 目录不存在，继续
+    // Directory doesn't exist, continue
   }
 
   await copyDir(resolvedPath, targetPath);
-  console.log(`✅ 已安装: ${skillName}`);
-  console.log(`   路径: ${targetPath}`);
+  console.log(`✅ ${t("success.installed")}: ${skillName}`);
+  console.log(`   ${t("common.path")}: ${targetPath}`);
 }
 
 async function installFromGitHub(
   repo: string,
   installDir: string,
-  force?: boolean
+  force?: boolean,
 ) {
   const parts = repo.split("/");
   if (parts.length < 2) {
-    console.log(`❌ 无效的仓库格式: ${repo}`);
-    console.log("   格式: <user>/<repo> 或 <user>/<repo>/<path>");
+    console.log(`❌ ${t("install.invalidRepo")}: ${repo}`);
+    console.log(`   ${t("install.repoHint")}`);
     return;
   }
 
@@ -100,19 +102,19 @@ async function installFromGitHub(
   const subPath = parts.slice(2).join("/");
 
   console.log(
-    `⬇️  从 GitHub 下载: ${owner}/${repoName}${subPath ? "/" + subPath : ""}...`
+    `⬇️  ${t("install.downloading")}: ${owner}/${repoName}${subPath ? "/" + subPath : ""}...`,
   );
 
   try {
     const repoInfo = await getRepoInfo(owner, repoName);
     if (!repoInfo) {
-      console.log(`❌ 仓库不存在: ${owner}/${repoName}`);
+      console.log(`❌ ${t("install.repoNotFound")}: ${owner}/${repoName}`);
       return;
     }
 
     const defaultBranch = repoInfo.default_branch || "main";
 
-    console.log(`⬇️  下载中...`);
+    console.log(`⬇️  Downloading...`);
     const zipData = await downloadRepoZip(owner, repoName, defaultBranch);
 
     const tempDir = await Deno.makeTempDir({ prefix: "skill-install-" });
@@ -120,14 +122,14 @@ async function installFromGitHub(
 
     await Deno.writeFile(zipPath, new Uint8Array(zipData));
 
-    console.log(`📦 解压中...`);
+    console.log(`📦 ${t("install.unzipping")}`);
     const unzipProcess = new Deno.Command("unzip", {
       args: ["-q", zipPath, "-d", tempDir],
     });
     const unzipResult = await unzipProcess.output();
 
     if (!unzipResult.success) {
-      throw new Error("解压失败");
+      throw new Error(t("error.unzipFailed"));
     }
 
     const extractedDir = join(tempDir, `${repoName}-${defaultBranch}`);
@@ -137,23 +139,25 @@ async function installFromGitHub(
     try {
       await Deno.stat(skillMdPath);
     } catch {
-      console.log(`⚠️  根目录没有 SKILL.md，尝试查找子目录...`);
+      console.log(`⚠️  ${t("install.noSkillMdRoot")}`);
 
       let foundSkills = 0;
-      for await (const entry of walk(sourceDir, {
-        maxDepth: 2,
-        includeDirs: false,
-        match: [/SKILL\.md$/],
-      })) {
+      for await (
+        const entry of walk(sourceDir, {
+          maxDepth: 2,
+          includeDirs: false,
+          match: [/SKILL\.md$/],
+        })
+      ) {
         const skillDir = dirname(entry.path);
         await installFromLocal(skillDir, installDir, force);
         foundSkills++;
       }
 
       if (foundSkills === 0) {
-        console.log(`❌ 未找到任何 SKILL.md 文件`);
+        console.log(`❌ ${t("install.noSkillMdFound")}`);
       } else {
-        console.log(`\n✅ 共安装 ${foundSkills} 个 Skills`);
+        console.log(`\n✅ ${t("install.totalInstalled", { count: foundSkills })}`);
       }
 
       await Deno.remove(tempDir, { recursive: true });
@@ -163,6 +167,6 @@ async function installFromGitHub(
     await installFromLocal(sourceDir, installDir, force);
     await Deno.remove(tempDir, { recursive: true });
   } catch (e) {
-    console.error(`❌ 安装失败: ${e}`);
+    console.error(`❌ ${t("error.installFailed")}: ${e}`);
   }
 }

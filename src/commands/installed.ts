@@ -1,17 +1,17 @@
 /**
- * installed 命令 - 列出已安装的 Skills
+ * installed command - List installed Skills
  */
 import { Command } from "@cliffy/command";
-import { getSkillsInstallDir, scanSkills, bold, cyan } from "../lib/mod.ts";
+import { bold, cyan, getSkillsInstallDir, scanSkills, t } from "../lib/mod.ts";
 import type { InstalledSkillsResult } from "../types/mod.ts";
 
 export const installedCommand = new Command()
   .name("installed")
   .alias("managed")
-  .description("列出已安装的 Skills")
-  .option("-g, --global", "仅显示全局安装")
-  .option("--project", "仅显示项目安装")
-  .option("--json", "输出 JSON 格式")
+  .description("List installed Skills")
+  .option("-g, --global", "Show global installations only")
+  .option("--project", "Show project installations only")
+  .option("--json", "Output in JSON format")
   .action(async (options) => {
     const showGlobal = options.global || (!options.global && !options.project);
     const showProject = options.project || (!options.global && !options.project);
@@ -23,9 +23,9 @@ export const installedCommand = new Command()
       try {
         await Deno.stat(globalDir);
         const skills = await scanSkills(globalDir);
-        results.push({ location: `全局 (${globalDir})`, skills });
+        results.push({ location: `${t("common.global")} (${globalDir})`, skills });
       } catch {
-        // 目录不存在
+        // Directory doesn't exist
       }
     }
 
@@ -34,9 +34,9 @@ export const installedCommand = new Command()
       try {
         await Deno.stat(projectDir);
         const skills = await scanSkills(projectDir);
-        results.push({ location: `项目 (${projectDir})`, skills });
+        results.push({ location: `${t("common.project")} (${projectDir})`, skills });
       } catch {
-        // 目录不存在
+        // Directory doesn't exist
       }
     }
 
@@ -49,7 +49,7 @@ export const installedCommand = new Command()
     for (const { location, skills } of results) {
       console.log(`\n📁 ${bold(location)}`);
       if (skills.length === 0) {
-        console.log("   (无已安装的 Skills)");
+        console.log(`   ${t("installed.noInstalled")}`);
       } else {
         for (const skill of skills) {
           console.log(`   ${cyan(skill.name)}`);
@@ -59,8 +59,8 @@ export const installedCommand = new Command()
     }
 
     if (totalCount === 0) {
-      console.log("\n💡 使用 'skill-manager install <source>' 安装 Skills");
+      console.log(`\n💡 ${t("installed.useInstall")}`);
     } else {
-      console.log(`\n📊 共 ${totalCount} 个已安装的 Skills`);
+      console.log(`\n📊 ${t("installed.total", { count: totalCount })}`);
     }
   });

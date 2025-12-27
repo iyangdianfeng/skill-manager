@@ -1,8 +1,9 @@
 /**
- * 控制台输出工具
+ * Console output utilities
+ * Provides colored output functions for CLI
  */
 
-// 使用 Deno 内置的终端颜色支持
+// Check if terminal supports colors
 const isColorSupported = Deno.stdout.isTerminal?.() ?? true;
 
 const color = (code: number) => (text: string) =>
@@ -16,28 +17,28 @@ export const red = color(31);
 export const gray = color(90);
 
 /**
- * 打印成功消息
+ * Print success message
  */
 export function success(message: string): void {
   console.log(green(`✅ ${message}`));
 }
 
 /**
- * 打印错误消息
+ * Print error message
  */
 export function error(message: string): void {
   console.log(red(`❌ ${message}`));
 }
 
 /**
- * 打印警告消息
+ * Print warning message
  */
 export function warn(message: string): void {
   console.log(yellow(`⚠️  ${message}`));
 }
 
 /**
- * 打印信息消息
+ * Print info message
  */
 export function info(message: string): void {
   console.log(cyan(`ℹ️  ${message}`));

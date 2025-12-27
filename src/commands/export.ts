@@ -1,28 +1,28 @@
 /**
- * export 命令 - 导出 Skill 为文件
+ * export command - Export Skill to file
  */
 import { Command } from "@cliffy/command";
-import { findSkillsDir, scanSkills, loadSkillFull, join } from "../lib/mod.ts";
+import { findSkillsDir, join, loadSkillFull, scanSkills, t } from "../lib/mod.ts";
 
 export const exportCommand = new Command()
   .name("export")
-  .description("导出 Skill 为文件")
+  .description("Export Skill to file")
   .arguments("<name:string>")
-  .option("-o, --output <file:string>", "指定输出文件")
-  .option("--format <format:string>", "导出格式 (md/json)", { default: "md" })
+  .option("-o, --output <file:string>", "Specify output file")
+  .option("--format <format:string>", "Export format (md/json)", { default: "md" })
   .action(async (options, name: string) => {
     const skillsDir = await findSkillsDir();
     const skills = await scanSkills(skillsDir);
 
     const skill = skills.find((s) => s.name === name);
     if (!skill) {
-      console.log(`❌ 未找到 skill: ${name}`);
+      console.log(`❌ ${t("error.skillNotFound")}: ${name}`);
       return;
     }
 
     const full = await loadSkillFull(skill.path);
     if (!full) {
-      console.log(`❌ 无法加载 skill: ${name}`);
+      console.log(`❌ ${t("error.skillNotFound")}: ${name}`);
       return;
     }
 
@@ -42,15 +42,27 @@ ${content.replace(/^---[\s\S]*?---\s*/, "")}
 
 ---
 
-## 📁 资源文件
+## 📁 ${t("export.resources")}
 
-${full.scripts.length > 0 ? `### Scripts\n${full.scripts.map((s) => `- \`${s}\``).join("\n")}` : ""}
-${full.references.length > 0 ? `### References\n${full.references.map((r) => `- \`${r}\``).join("\n")}` : ""}
-${full.assets.length > 0 ? `### Assets\n${full.assets.map((a) => `- \`${a}\``).join("\n")}` : ""}
+${
+        full.scripts.length > 0
+          ? `### ${t("common.scripts")}\n${full.scripts.map((s) => `- \`${s}\``).join("\n")}`
+          : ""
+      }
+${
+        full.references.length > 0
+          ? `### ${t("common.references")}\n${full.references.map((r) => `- \`${r}\``).join("\n")}`
+          : ""
+      }
+${
+        full.assets.length > 0
+          ? `### ${t("common.assets")}\n${full.assets.map((a) => `- \`${a}\``).join("\n")}`
+          : ""
+      }
 `;
     }
 
     const outputFile = options.output || `${name}.${options.format}`;
     await Deno.writeTextFile(outputFile, output);
-    console.log(`✅ 已导出到: ${outputFile}`);
+    console.log(`✅ ${t("success.exported")}: ${outputFile}`);
   });

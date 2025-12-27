@@ -1,38 +1,37 @@
-#!/usr/bin/env -S deno run --allow-read --allow-write --allow-env --allow-net --allow-run
 /**
- * Skill Manager CLI - 跨平台 AI Skill 管理工具
+ * Skill Manager CLI - Cross-platform AI Skill Management Tool
  *
- * 使用 Cliffy 框架构建的命令行工具
+ * Built with Cliffy command framework
  *
  * @module
  */
 
 import { Command } from "@cliffy/command";
 import {
-  listCommand,
-  searchCommand,
-  showCommand,
-  loadCommand,
-  initCommand,
-  validateCommand,
   exportCommand,
   githubCommand,
+  initCommand,
   installCommand,
-  uninstallCommand,
   installedCommand,
+  listCommand,
+  loadCommand,
+  searchCommand,
+  showCommand,
+  uninstallCommand,
+  validateCommand,
 } from "./commands/mod.ts";
 
-// 版本信息
+// Version info
 const VERSION = "1.0.0";
 
-// 创建主命令
+// Create main command
 const program = new Command()
   .name("skill-manager")
   .version(VERSION)
-  .description("跨平台 AI Skill 管理工具 - 管理和使用 Agent Skills")
+  .description("Cross-platform AI Skill Management Tool - Manage and use Agent Skills")
   .meta("Author", "Anthropic Skills Community")
   .meta("Repository", "https://github.com/anthropics/skills")
-  // 本地管理命令
+  // Local management commands
   .command("list", listCommand)
   .command("search", searchCommand)
   .command("show", showCommand)
@@ -40,11 +39,11 @@ const program = new Command()
   .command("init", initCommand)
   .command("validate", validateCommand)
   .command("export", exportCommand)
-  // GitHub & 安装命令
+  // GitHub & installation commands
   .command("github", githubCommand)
   .command("install", installCommand)
   .command("uninstall", uninstallCommand)
   .command("installed", installedCommand);
 
-// 解析命令行参数
+// Parse command line arguments
 await program.parse(Deno.args);
