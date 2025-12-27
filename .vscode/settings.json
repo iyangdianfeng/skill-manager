@@ -1,0 +1,27 @@
+{
+    // 启用 Deno 扩展
+    "deno.enable": true,
+    // 使用项目中的 deno.json 配置
+    "deno.config": "./deno.json",
+    // 启用代码检查
+    "deno.lint": true,
+    // 启用不稳定 API (如果需要)
+    "deno.unstable": false,
+    // 禁用 TypeScript 的内置验证 (由 Deno 接管)
+    "typescript.validate.enable": false,
+    "javascript.validate.enable": false,
+    // 使用 Deno 格式化
+    "editor.defaultFormatter": "denoland.vscode-deno",
+    "[typescript]": {
+        "editor.defaultFormatter": "denoland.vscode-deno"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "denoland.vscode-deno"
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "denoland.vscode-deno"
+    },
+    // 可选：启用类型提示
+    "typescript.inlayHints.variableTypes.enabled": true,
+    "typescript.inlayHints.parameterTypes.enabled": true
+}
