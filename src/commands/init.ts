@@ -86,17 +86,19 @@ description: [TODO: Describe this skill's functionality and when it should be us
 
     // Create example files
     await Deno.writeTextFile(
-      join(skillPath, "scripts", "example.py"),
-      `#!/usr/bin/env python3
-"""
-Example script for ${name}
-"""
+      join(skillPath, "scripts", "example.ts"),
+      `#!/usr/bin/env -S deno run
+/**
+ * Example script for ${name}
+ */
 
-def main():
-    print("Hello from ${name}!")
+function main(): void {
+  console.log("Hello from ${name}!");
+}
 
-if __name__ == "__main__":
-    main()
+if (import.meta.main) {
+  main();
+}
 `,
     );
 
@@ -113,7 +115,7 @@ Place detailed reference documentation in this directory. These documents will b
     console.log(`  ${name}/`);
     console.log(`  ├── SKILL.md`);
     console.log(`  ├── scripts/`);
-    console.log(`  │   └── example.py`);
+    console.log(`  │   └── example.ts`);
     console.log(`  ├── references/`);
     console.log(`  │   └── README.md`);
     console.log(`  └── assets/`);
