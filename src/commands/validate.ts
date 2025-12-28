@@ -58,6 +58,38 @@ export const validateCommand = new Command()
       warnings.push(t("validate.bodyTooShort"));
     }
 
+    // Validate tools
+    if (frontmatter.tools) {
+      const tools = frontmatter.tools as Array<Record<string, unknown>>;
+      if (Array.isArray(tools)) {
+        console.log(`🔧 ${t("validate.toolsInfo", { count: tools.length })}`);
+        for (let i = 0; i < tools.length; i++) {
+          const tool = tools[i];
+          if (!tool.name) {
+            errors.push(t("validate.toolMissingName", { index: i }));
+            continue;
+          }
+          const toolName = String(tool.name);
+          if (!tool.script) {
+            errors.push(t("validate.toolMissingScript", { name: toolName }));
+          } else {
+            // Check if script file exists
+            const scriptPath = join(resolvedPath, String(tool.script));
+            try {
+              await Deno.stat(scriptPath);
+            } catch {
+              warnings.push(
+                t("validate.toolScriptNotFound", { name: toolName, script: String(tool.script) }),
+              );
+            }
+          }
+          if (!tool.description) {
+            warnings.push(t("validate.toolMissingDesc", { name: toolName }));
+          }
+        }
+      }
+    }
+
     // Check for TODO placeholders
     if (body.includes("[TODO:")) {
       warnings.push(t("validate.hasTodo"));

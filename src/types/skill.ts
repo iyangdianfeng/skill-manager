@@ -3,6 +3,18 @@
  */
 
 /**
+ * Tool script definition
+ */
+export interface SkillTool {
+  /** Tool name (identifier) */
+  name: string;
+  /** Script path relative to skill directory */
+  script: string;
+  /** Tool description */
+  description: string;
+}
+
+/**
  * Skill metadata (basic information)
  */
 export interface SkillMeta {
@@ -18,6 +30,8 @@ export interface SkillMeta {
   compatibility?: string;
   /** Custom metadata */
   metadata?: Record<string, string>;
+  /** Tool scripts */
+  tools?: SkillTool[];
 }
 
 /**

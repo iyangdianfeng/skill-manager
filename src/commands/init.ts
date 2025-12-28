@@ -45,7 +45,11 @@ export const initCommand = new Command()
 
     const template = `---
 name: ${name}
-description: [TODO: Describe this skill's functionality and when it should be used]
+description: "[TODO: Describe this skill's functionality and when it should be used]"
+tools:
+  - name: example
+    script: scripts/example.ts
+    description: "[TODO: Describe what this tool does]"
 ---
 
 # ${skillTitle}
@@ -69,16 +73,25 @@ description: [TODO: Describe this skill's functionality and when it should be us
 
 [TODO: Detailed description]
 
+## Tools
+
+The following tools are available for this skill:
+
+| Tool | Script | Description |
+|------|--------|-------------|
+| \`example\` | \`scripts/example.ts\` | [TODO: Describe what this tool does] |
+
 ## Resources
 
-- \`scripts/\` - Executable scripts
+- \`scripts/\` - Executable tool scripts
 - \`references/\` - Reference documentation
 - \`assets/\` - Templates and resource files
 
 ## Examples
 
-\`\`\`
-[TODO: Add usage examples]
+\`\`\`bash
+# Run the example tool
+deno run --allow-read scripts/example.ts
 \`\`\`
 `;
 

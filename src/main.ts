@@ -16,6 +16,7 @@ import {
   listCommand,
   loadCommand,
   searchCommand,
+  setCommand,
   showCommand,
   uninstallCommand,
   validateCommand,
@@ -38,6 +39,7 @@ const program = new Command()
   .command("load", loadCommand)
   .command("init", initCommand)
   .command("validate", validateCommand)
+  .command("set", setCommand)
   .command("export", exportCommand)
   // GitHub & installation commands
   .command("github", githubCommand)

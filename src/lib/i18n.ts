@@ -53,7 +53,7 @@ const messages = {
     // Search command
     "search.searching": "Searching",
     "search.found": "Found {count} matching skills",
-    "search.noMatch": "No skills matching \"{query}\" found",
+    "search.noMatch": 'No skills matching "{query}" found',
 
     // Show command
     "show.usage": "Usage",
@@ -65,7 +65,8 @@ const messages = {
 
     // Init command
     "init.nameError": "Skill name format error",
-    "init.nameHint": "Required: lowercase letters, numbers, and hyphens. Cannot start or end with hyphen",
+    "init.nameHint":
+      "Required: lowercase letters, numbers, and hyphens. Cannot start or end with hyphen",
     "init.structure": "Directory structure",
     "init.nextSteps": "Next steps",
     "init.editSkillMd": "Edit {path} to complete content",
@@ -76,21 +77,46 @@ const messages = {
     "validate.errors": "Errors",
     "validate.warnings": "Warnings",
     "validate.nameTooLong": "name exceeds 64 character limit",
-    "validate.nameFormat": "name format error: only lowercase letters, numbers, and hyphens allowed",
+    "validate.nameFormat":
+      "name format error: only lowercase letters, numbers, and hyphens allowed",
     "validate.nameConsecutive": "name cannot contain consecutive hyphens",
     "validate.nameMismatch": "Directory name '{dir}' does not match skill name '{name}'",
     "validate.descTooLong": "description exceeds 1024 character limit",
     "validate.descTooShort": "description too short, recommend at least 20 characters",
     "validate.bodyTooShort": "SKILL.md body too short, recommend adding more content",
     "validate.hasTodo": "Contains incomplete TODO placeholders",
+    "validate.toolMissingName": "Tool at index {index} is missing 'name' field",
+    "validate.toolMissingScript": "Tool '{name}' is missing 'script' field",
+    "validate.toolMissingDesc": "Tool '{name}' is missing 'description' field",
+    "validate.toolScriptNotFound": "Tool '{name}' script not found: {script}",
+    "validate.toolsInfo": "Found {count} tools defined",
+
+    // Set command
+    "set.nameUpdated": "Name updated to '{name}'",
+    "set.descUpdated": "Description updated",
+    "set.licenseUpdated": "License updated to '{license}'",
+    "set.compatUpdated": "Compatibility updated",
+    "set.metaUpdated": "Metadata updated: {key}={value}",
+    "set.invalidMeta": "Invalid metadata format. Use: key=value",
+    "set.invalidToolFormat": "Invalid tool format",
+    "set.toolFormatHint": "Format: name:script:description",
+    "set.toolAdded": "Tool '{name}' added",
+    "set.toolUpdated": "Tool '{name}' updated",
+    "set.toolRemoved": "Tool '{name}' removed",
+    "set.toolNotFound": "Tool '{name}' not found",
+    "set.noTools": "No tools defined",
+    "set.toolsList": "Defined tools",
+    "set.currentConfig": "Current configuration",
+    "set.usageHint": "Use --help to see available options",
+    "set.saved": "Saved to {path}",
 
     // Export command
     "export.resources": "Resources",
 
     // GitHub command
-    "github.searching": "Searching GitHub for \"{query}\"...",
+    "github.searching": 'Searching GitHub for "{query}"...',
     "github.foundRepos": "Found {count} repositories",
-    "github.noMatch": "No Skills matching \"{query}\" found",
+    "github.noMatch": 'No Skills matching "{query}" found',
     "github.hint": "Tip: Try searching for 'pdf', 'docx', 'claude', etc.",
     "github.installHint": "Installation",
     "github.installProject": "Install to project directory",
@@ -104,7 +130,7 @@ const messages = {
     "install.unzipping": "Unzipping...",
     "install.invalidDir": "Invalid Skill directory",
     "install.mustContain": "Directory must contain SKILL.md file",
-    "install.alreadyExists": "Skill \"{name}\" already exists",
+    "install.alreadyExists": 'Skill "{name}" already exists',
     "install.useForce": "Use --force to overwrite",
     "install.invalidRepo": "Invalid repository format",
     "install.repoHint": "Format: <user>/<repo> or <user>/<repo>/<path>",
@@ -171,7 +197,7 @@ const messages = {
     // Search command
     "search.searching": "搜索中",
     "search.found": "找到 {count} 个匹配的 skills",
-    "search.noMatch": "未找到匹配 \"{query}\" 的 skill",
+    "search.noMatch": '未找到匹配 "{query}" 的 skill',
 
     // Show command
     "show.usage": "使用方式",
@@ -201,14 +227,38 @@ const messages = {
     "validate.descTooShort": "description 太短，建议至少 20 字符",
     "validate.bodyTooShort": "SKILL.md body 内容太少，建议添加更多指令",
     "validate.hasTodo": "存在未完成的 TODO 占位符",
+    "validate.toolMissingName": "索引 {index} 的工具缺少 'name' 字段",
+    "validate.toolMissingScript": "工具 '{name}' 缺少 'script' 字段",
+    "validate.toolMissingDesc": "工具 '{name}' 缺少 'description' 字段",
+    "validate.toolScriptNotFound": "工具 '{name}' 的脚本不存在: {script}",
+    "validate.toolsInfo": "发现 {count} 个已定义的工具",
+
+    // Set command
+    "set.nameUpdated": "名称已更新为 '{name}'",
+    "set.descUpdated": "描述已更新",
+    "set.licenseUpdated": "许可证已更新为 '{license}'",
+    "set.compatUpdated": "兼容性说明已更新",
+    "set.metaUpdated": "元数据已更新: {key}={value}",
+    "set.invalidMeta": "元数据格式无效。使用: key=value",
+    "set.invalidToolFormat": "工具格式无效",
+    "set.toolFormatHint": "格式: name:script:description",
+    "set.toolAdded": "工具 '{name}' 已添加",
+    "set.toolUpdated": "工具 '{name}' 已更新",
+    "set.toolRemoved": "工具 '{name}' 已移除",
+    "set.toolNotFound": "未找到工具 '{name}'",
+    "set.noTools": "未定义任何工具",
+    "set.toolsList": "已定义的工具",
+    "set.currentConfig": "当前配置",
+    "set.usageHint": "使用 --help 查看可用选项",
+    "set.saved": "已保存到 {path}",
 
     // Export command
     "export.resources": "资源文件",
 
     // GitHub command
-    "github.searching": "在 GitHub 搜索: \"{query}\"...",
+    "github.searching": '在 GitHub 搜索: "{query}"...',
     "github.foundRepos": "找到 {count} 个仓库",
-    "github.noMatch": "未找到匹配 \"{query}\" 的 Skills",
+    "github.noMatch": '未找到匹配 "{query}" 的 Skills',
     "github.hint": "提示: 尝试搜索 'pdf', 'docx', 'claude' 等关键词",
     "github.installHint": "安装方式",
     "github.installProject": "安装到项目目录",
@@ -222,7 +272,7 @@ const messages = {
     "install.unzipping": "解压中...",
     "install.invalidDir": "无效的 Skill 目录",
     "install.mustContain": "目录中必须包含 SKILL.md 文件",
-    "install.alreadyExists": "Skill \"{name}\" 已存在",
+    "install.alreadyExists": 'Skill "{name}" 已存在',
     "install.useForce": "使用 --force 覆盖安装",
     "install.invalidRepo": "无效的仓库格式",
     "install.repoHint": "格式: <user>/<repo> 或 <user>/<repo>/<path>",
@@ -291,4 +341,4 @@ export function t(key: MessageKey, params?: Record<string, string | number>): st
 /**
  * Export messages type for external use
  */
-export type { MessageKey, Locale };
+export type { Locale, MessageKey };

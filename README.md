@@ -17,6 +17,7 @@ Cross-platform AI Skill management tool for managing and using
 - **load** - Output skill content for AI reading
 - **init** - Create a new skill
 - **validate** - Validate skill format
+- **set** - Manage SKILL.md YAML frontmatter
 - **export** - Export skill to file
 
 ### GitHub & Installation
@@ -88,6 +89,16 @@ skill-manager init my-skill --path ./custom-skills
 
 # Validate skill format
 skill-manager validate ./skills/my-skill
+
+# Manage SKILL.md frontmatter
+skill-manager set ./my-skill                                  # View current config
+skill-manager set ./my-skill --name "new-name"                # Set name
+skill-manager set ./my-skill --description "New description"  # Set description
+skill-manager set ./my-skill --license "MIT"                  # Set license
+skill-manager set ./my-skill --add-tool "build:scripts/build.ts:Build project"  # Add tool
+skill-manager set ./my-skill --remove-tool example            # Remove tool
+skill-manager set ./my-skill --list-tools                     # List all tools
+skill-manager set ./my-skill --set-meta "author=your-name"    # Set metadata
 
 # Export skill
 skill-manager export pdf
@@ -207,6 +218,7 @@ Then follow the output guidance to complete the task.
 | Load for AI          | ✅ **Unique**     | ❌                   |
 | Create New Skill     | ✅ **Unique**     | ❌                   |
 | Validate Format      | ✅ **Unique**     | ❌                   |
+| Manage Frontmatter   | ✅ **Unique**     | ❌                   |
 | Export Skill         | ✅ **Unique**     | ❌                   |
 | Runtime              | Deno              | Node.js              |
 

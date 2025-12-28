@@ -16,6 +16,7 @@
 - **load** - 输出 skill 内容供 AI 读取
 - **init** - 创建新的 skill
 - **validate** - 验证 skill 格式
+- **set** - 管理 SKILL.md YAML 头信息
 - **export** - 导出 skill 为文件
 
 ### GitHub & 安装
@@ -87,6 +88,16 @@ skill-manager init my-skill --path ./custom-skills
 
 # 验证 skill 格式
 skill-manager validate ./skills/my-skill
+
+# 管理 SKILL.md 头信息
+skill-manager set ./my-skill                                  # 查看当前配置
+skill-manager set ./my-skill --name "new-name"                # 设置名称
+skill-manager set ./my-skill --description "新的描述"          # 设置描述
+skill-manager set ./my-skill --license "MIT"                  # 设置许可证
+skill-manager set ./my-skill --add-tool "build:scripts/build.ts:构建项目"  # 添加工具
+skill-manager set ./my-skill --remove-tool example            # 移除工具
+skill-manager set ./my-skill --list-tools                     # 列出所有工具
+skill-manager set ./my-skill --set-meta "author=your-name"    # 设置元数据
 
 # 导出 skill
 skill-manager export pdf
@@ -206,6 +217,7 @@ description: 自动加载 PDF 处理能力
 | 加载内容供 AI 读取 | ✅ **独有**     | ❌                   |
 | 创建新 Skill       | ✅ **独有**     | ❌                   |
 | 验证格式           | ✅ **独有**     | ❌                   |
+| 管理头信息         | ✅ **独有**     | ❌                   |
 | 导出 Skill         | ✅ **独有**     | ❌                   |
 | 运行时             | Deno            | Node.js              |
 

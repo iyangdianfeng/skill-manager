@@ -4,6 +4,7 @@ export { showCommand } from "./show.ts";
 export { loadCommand } from "./load.ts";
 export { initCommand } from "./init.ts";
 export { validateCommand } from "./validate.ts";
+export { setCommand } from "./set.ts";
 export { exportCommand } from "./export.ts";
 export { githubCommand } from "./github.ts";
 export { installCommand } from "./install.ts";
