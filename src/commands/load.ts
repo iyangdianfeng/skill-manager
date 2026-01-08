@@ -2,7 +2,7 @@
  * load command - Output Skill content for AI reading
  */
 import { Command } from "@cliffy/command";
-import { findSkillsDir, join, scanSkills, t } from "../lib/mod.ts";
+import { join, scanSkills, t } from "../lib/mod.ts";
 import { parseFrontmatter } from "../lib/parser.ts";
 
 export const loadCommand = new Command()
@@ -13,8 +13,7 @@ export const loadCommand = new Command()
   .option("-o, --output <file:string>", "Save to file")
   .option("--outline", "Output outline only")
   .action(async (options, name: string) => {
-    const skillsDir = await findSkillsDir();
-    const skills = await scanSkills(skillsDir);
+    const skills = await scanSkills(Deno.cwd());
 
     const skill = skills.find((s) => s.name === name);
     if (!skill) {

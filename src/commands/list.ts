@@ -3,7 +3,7 @@
  */
 import { Command } from "@cliffy/command";
 import { Table } from "@cliffy/table";
-import { bold, cyan, findSkillsDir, scanSkills, t } from "../lib/mod.ts";
+import { bold, cyan, scanSkills, t } from "../lib/mod.ts";
 
 export const listCommand = new Command()
   .name("list")
@@ -12,10 +12,10 @@ export const listCommand = new Command()
   .option("-v, --verbose", "Show detailed information")
   .option("--json", "Output in JSON format")
   .action(async (options) => {
-    const skillsDir = await findSkillsDir();
-    console.log(`📂 ${t("list.scanning")}: ${skillsDir}\n`);
+    const cwd = Deno.cwd();
+    console.log(`📂 ${t("list.scanning")}: ${cwd}\n`);
 
-    const skills = await scanSkills(skillsDir);
+    const skills = await scanSkills(cwd);
 
     if (skills.length === 0) {
       console.log(`❌ ${t("list.noSkills")}`);

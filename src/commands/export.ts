@@ -2,7 +2,7 @@
  * export command - Export Skill to file
  */
 import { Command } from "@cliffy/command";
-import { findSkillsDir, join, loadSkillFull, scanSkills, t } from "../lib/mod.ts";
+import { join, loadSkillFull, scanSkills, t } from "../lib/mod.ts";
 
 export const exportCommand = new Command()
   .name("export")
@@ -11,8 +11,7 @@ export const exportCommand = new Command()
   .option("-o, --output <file:string>", "Specify output file")
   .option("--format <format:string>", "Export format (md/json)", { default: "md" })
   .action(async (options, name: string) => {
-    const skillsDir = await findSkillsDir();
-    const skills = await scanSkills(skillsDir);
+    const skills = await scanSkills(Deno.cwd());
 
     const skill = skills.find((s) => s.name === name);
     if (!skill) {

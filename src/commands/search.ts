@@ -2,7 +2,7 @@
  * search command - Local search for Skills
  */
 import { Command } from "@cliffy/command";
-import { bold, cyan, findSkillsDir, scanSkills, t } from "../lib/mod.ts";
+import { bold, cyan, scanSkills, t } from "../lib/mod.ts";
 
 export const searchCommand = new Command()
   .name("search")
@@ -11,8 +11,7 @@ export const searchCommand = new Command()
   .arguments("<query:string>")
   .option("--json", "Output in JSON format")
   .action(async (options, query: string) => {
-    const skillsDir = await findSkillsDir();
-    const skills = await scanSkills(skillsDir);
+    const skills = await scanSkills(Deno.cwd());
 
     const queryLower = query.toLowerCase();
     const matches = skills.filter(

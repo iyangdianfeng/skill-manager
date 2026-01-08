@@ -56,40 +56,80 @@ export async function findSkillsDir(): Promise<string> {
 
 /**
  * Scan directory for all Skills
+ * If the path is the current working directory, it scans specific project and global locations.
+ * Otherwise it scans the specified directory.
  */
 export async function scanSkills(skillsDir: string): Promise<SkillMeta[]> {
+  // If scanning from CWD, use the multi-path strategy
+  if (skillsDir === Deno.cwd()) {
+    const paths = [
+      join(skillsDir, "skills"),
+      join(skillsDir, ".opencode", "skill"),
+      join(skillsDir, ".claude", "skills"),
+    ];
+
+    const home = Deno.env.get("HOME") || Deno.env.get("USERPROFILE");
+    if (home) {
+      paths.push(join(home, ".config", "opencode", "skill"));
+      paths.push(join(home, ".claude", "skills"));
+    }
+
+    const allSkills: SkillMeta[] = [];
+    const seenNames = new Set<string>();
+
+    for (const p of paths) {
+      const skills = await scanDirectory(p);
+      for (const skill of skills) {
+        if (!seenNames.has(skill.name)) {
+          allSkills.push(skill);
+          seenNames.add(skill.name);
+        }
+      }
+    }
+
+    return allSkills.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  // Otherwise scan the specific directory
+  return scanDirectory(skillsDir);
+}
+
+/**
+ * Scan a specific directory for skills (depth 1)
+ * Looks for <dir>/<name>/SKILL.md
+ */
+async function scanDirectory(dir: string): Promise<SkillMeta[]> {
   const skills: SkillMeta[] = [];
 
   try {
-    for await (
-      const entry of walk(skillsDir, {
-        maxDepth: 3,
-        includeDirs: false,
-        match: [/SKILL\.md$/],
-      })
-    ) {
-      try {
-        const content = await Deno.readTextFile(entry.path);
-        const { frontmatter } = parseFrontmatter(content);
+    for await (const entry of Deno.readDir(dir)) {
+      if (entry.isDirectory) {
+        const skillPath = join(dir, entry.name);
+        const skillMdPath = join(skillPath, "SKILL.md");
 
-        if (frontmatter.name && frontmatter.description) {
-          skills.push({
-            name: String(frontmatter.name),
-            description: String(frontmatter.description),
-            path: dirname(entry.path),
-            license: frontmatter.license ? String(frontmatter.license) : undefined,
-            compatibility: frontmatter.compatibility
-              ? String(frontmatter.compatibility)
-              : undefined,
-            metadata: frontmatter.metadata as Record<string, string> | undefined,
-          });
+        try {
+          const content = await Deno.readTextFile(skillMdPath);
+          const { frontmatter } = parseFrontmatter(content);
+
+          if (frontmatter.name && frontmatter.description) {
+            skills.push({
+              name: String(frontmatter.name),
+              description: String(frontmatter.description),
+              path: skillPath,
+              license: frontmatter.license ? String(frontmatter.license) : undefined,
+              compatibility: frontmatter.compatibility
+                ? String(frontmatter.compatibility)
+                : undefined,
+              metadata: frontmatter.metadata as Record<string, string> | undefined,
+            });
+          }
+        } catch {
+          // No SKILL.md or read error, ignore
         }
-      } catch (e) {
-        console.error(`⚠️  Parse failed: ${entry.path}: ${e}`);
       }
     }
-  } catch (e) {
-    console.error(`❌ Failed to scan directory: ${e}`);
+  } catch {
+    // Directory doesn't exist, ignore
   }
 
   return skills.sort((a, b) => a.name.localeCompare(b.name));

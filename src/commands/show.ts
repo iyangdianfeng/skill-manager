@@ -2,7 +2,7 @@
  * show command - Display Skill details
  */
 import { Command } from "@cliffy/command";
-import { bold, cyan, findSkillsDir, loadSkillFull, scanSkills, t } from "../lib/mod.ts";
+import { bold, cyan, loadSkillFull, scanSkills, t } from "../lib/mod.ts";
 
 export const showCommand = new Command()
   .name("show")
@@ -10,8 +10,7 @@ export const showCommand = new Command()
   .description("Display Skill details")
   .arguments("<name:string>")
   .action(async (_options, name: string) => {
-    const skillsDir = await findSkillsDir();
-    const skills = await scanSkills(skillsDir);
+    const skills = await scanSkills(Deno.cwd());
 
     const skill = skills.find((s) => s.name === name);
     if (!skill) {
